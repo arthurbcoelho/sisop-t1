@@ -8,10 +8,16 @@ struct Task {
     int timeToComplete;
 };
 
-void initialiseTask(Task &t, int id, int start, int timeToComplete){
+void initialiseTask(struct Task &t, int id, int start, int timeToComplete){
     t.id = id;
     t.start = start;
     t.timeToComplete = timeToComplete;
+}
+
+void roundRobin(struct Task tasks[]){
+
+    cout << tasks[0].id << endl;
+
 }
 
 int main() {
@@ -28,9 +34,7 @@ int main() {
 
     struct Task TASKS[] = {T1, T2, T3, T4}; // TODO
 
-    cout << TASKS[0].id << endl;
-    cout << T1.start << endl;
-    cout << T1.timeToComplete << endl;
-
+    roundRobin(TASKS);
+    
     return 0;
 }
