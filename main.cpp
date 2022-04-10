@@ -10,10 +10,10 @@ struct Task
 {
     string name;
     int start;
-    int duration;
+    int time;
 };
 
-void readLine(string line, string *taskName, int *taskStart, int *taskDuration){
+void readLine(string line, string *taskName, int *taskStart, int *taskTime){
 
     int n = line.length();
     
@@ -31,7 +31,7 @@ void readLine(string line, string *taskName, int *taskStart, int *taskDuration){
             *taskStart = stoi(ptr);
         }
         else{
-            *taskDuration = stoi(ptr);
+            *taskTime = stoi(ptr);
         }
         ptr = strtok(NULL, ",");
     }
@@ -41,25 +41,31 @@ void roundRobin(struct Task *tasks, int taskCount){
     int quantum = 3;
     int overhead = 1;
     int j = 0;
-    
+    int k = 0;
+    int totalExecutionTime = 0;
 
-    //cout << "      ==== Round Robin ====      " << endl << endl;
+    cout << "      ==== Round Robin ====      " << endl << endl;
 
     while(j < taskCount){
         cout << "Caiu aqui" << endl;
         for(int i=0; i < taskCount; i++){
-            if(tasks[i].duration > 0){
-                
-                cout << "Executando: " << tasks[i].name << " Tempo restante: " << tasks[i].duration << endl;
-                tasks[i].duration -= (quantum - overhead);
-                
-                if(tasks[i].duration <= 0){
+            if(k<taskCount){
+                totalExecutionTime += tasks[i].time;
+                k++;
+            }
+            if(tasks[i].time > 0){  
+                cout << "Executando: " << tasks[i].name << " Tempo restante: " << tasks[i].time << endl;
+                tasks[i].time -= (quantum - overhead);
+                totalExecutionTime += overhead;
+
+                if(tasks[i].time <= 0){
                     cout << tasks[i].name << " Finalizada!" << endl;
                     j++;
                 }
             }
         }
     }
+    cout << "Tempo total: " << totalExecutionTime << endl;
 }
 
 int main()
@@ -76,7 +82,7 @@ int main()
         struct Task TASKS[taskCount];
         
         while (getline(file, line)){
-            readLine(line, &TASKS[j].name, &TASKS[j].start, &TASKS[j].duration);
+            readLine(line, &TASKS[j].name, &TASKS[j].start, &TASKS[j].time);
             j++;
         }
         roundRobin(TASKS, taskCount);
