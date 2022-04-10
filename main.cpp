@@ -1,74 +1,86 @@
 #include <iostream>
 #include <vector>
-#include <fstrea>
-
+#include <fstream>
+#include <string>
+#include <cstring>
 
 using namespace std;
 
 struct Task
 {
-    int id;
+    string name;
     int start;
     int duration;
 };
 
-int taskId = 0;
-int totalTime = 0;
+void readLine(string line, string *taskName, int *taskStart, int *taskDuration){
 
-struct Task TASKS[] = {};
-
-
-void initialiseTask(struct Task &t, int start, int duration)
-{
-    ifstream file("tarefas.txt");
-    if (file.is_open()){
-        string line;
-        while (getline(file, line)){
-            cout << line << endl; 
-        }
-    }
+    int n = line.length();
     
-    //t.id = taskId;
-    //t.start = start;
-    //t.executio
-    //t.duration = duration;
-//
-    //TASKS[taskId] = t;
-//
-    //taskId++;
-    //totalTime += duration;
+    char *ptr;
+    char sstring[n+1];
+    
+    strcpy(sstring, line.c_str());
+    ptr = strtok(sstring, ",");
+    
+    for(int c=0; ptr != NULL; c++){  
+        if(c == 0){
+            *taskName = ptr;
+        }
+        else if (c == 1){
+            *taskStart = stoi(ptr);
+        }
+        else{
+            *taskDuration = stoi(ptr);
+        }
+        ptr = strtok(NULL, ",");
+    }
 }
 
-void roundRobin()
-{
-
-    int QUANTUM = 2;
-    int taskCount = taskId;
+void roundRobin(struct Task *tasks, int taskCount){
+    int quantum = 3;
+    int overhead = 1;
     int j = 0;
-
     
+
+    //cout << "      ==== Round Robin ====      " << endl << endl;
+
+    while(j < taskCount){
+        cout << "Caiu aqui" << endl;
+        for(int i=0; i < taskCount; i++){
+            if(tasks[i].duration > 0){
+                
+                cout << "Executando: " << tasks[i].name << " Tempo restante: " << tasks[i].duration << endl;
+                tasks[i].duration -= (quantum - overhead);
+                
+                if(tasks[i].duration <= 0){
+                    cout << tasks[i].name << " Finalizada!" << endl;
+                    j++;
+                }
+            }
+        }
+    }
 }
 
 int main()
 {
+    int j = 0;
+    int taskCount = 0;
+    char *ptr;
 
-    int totalExecutionTime = 0;
-    struct Task T1, T2, T3, T4;
-
-    initialiseTask(T1, 0, 8);
-    initialiseTask(T2, 1, 4);
-    initialiseTask(T3, 2, 9);
-    initialiseTask(T4, 3, 5);
-
-    roundRobin();
-
-    // cout << TASKS[0].id << endl;
-    // cout << TASKS[1].id << endl;
-    // cout << TASKS[2].id << endl;
-    // cout << TASKS[3].id << endl;
-    // cout << totalTime << endl;
-    // struct Task TASKS[] = {T1, T2, T3, T4}; // TODO Dinamic?
-    // roundRobin(TASKS, sizeof(TASKS) / sizeof(struct Task));
-
+    ifstream file("tarefas.txt");
+    if (file.is_open()){
+        string line;
+        getline(file, line);
+        taskCount = stoi(line);
+        struct Task TASKS[taskCount];
+        
+        while (getline(file, line)){
+            readLine(line, &TASKS[j].name, &TASKS[j].start, &TASKS[j].duration);
+            j++;
+        }
+        roundRobin(TASKS, taskCount);
+    }
     return 0;
 }
+
