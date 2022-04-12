@@ -113,8 +113,12 @@ int main()
             readLine(line, &TASKS[j].name, &TASKS[j].start, &TASKS[j].time);
             j++;
         }
+        struct Task TASKSCOPY[taskCount];
         
-        struct Task TASKSCOPY[taskCount] = TASKS;
+        for(int c; c < taskCount; c++){
+            TASKSCOPY[c] = TASKS[c];
+        }
+
         
         roundRobin(TASKS, taskCount);
         cout << endl;
