@@ -55,8 +55,14 @@ void roundRobin(struct Task *tasks, int taskCount){
             }
             if(tasks[i].time > 0){  
                 cout << "Executando: " << tasks[i].name << " Tempo restante: " << tasks[i].time << endl;
-                tasks[i].time -= (QUANTUM - OVERHEAD);
+                if(j < taskCount - 1){
+                    tasks[i].time -= (QUANTUM - OVERHEAD);
+                }
+                else{
+                    tasks[i].time = 0;
+                }
                 totalExecutionTime += OVERHEAD;
+                
                 if(tasks[i].time <= 0){
                     cout << tasks[i].name << " Finalizada!" << endl;
                     j++;
