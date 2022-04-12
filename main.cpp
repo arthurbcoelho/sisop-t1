@@ -1,7 +1,5 @@
 #include <iostream>
-#include <vector>
 #include <fstream>
-#include <string>
 #include <cstring>
 
 #define OVERHEAD 1
@@ -40,7 +38,7 @@ void readLine(string line, string *taskName, int *taskStart, int *taskTime){
     }
 }
 
-void roundRobin(struct Task *tasks, int taskCount){
+int roundRobin(struct Task *tasks, int taskCount){
     int j = 0;
     int k = 0;
     int totalExecutionTime = 0;
@@ -62,21 +60,22 @@ void roundRobin(struct Task *tasks, int taskCount){
                     tasks[i].time = 0;
                 }
                 totalExecutionTime += OVERHEAD;
-                
+
                 if(tasks[i].time <= 0){
                     cout << tasks[i].name << " Finalizada!" << endl;
                     j++;
                 }
             }
         }
-    }
-    cout << "Tempo total: " << totalExecutionTime << endl;
+}            
+    return totalExecutionTime; 
 }
 
-void shortestJobFirst(struct Task *tasks, int taskCount){
+int shortestJobFirst(struct Task *tasks, int taskCount){
     
     cout << "  === Shortest Job First ===  " << endl << endl;
     
+    int results[2];
     int i, j;
     int totalExecutionTime = 0;
 
@@ -98,15 +97,15 @@ void shortestJobFirst(struct Task *tasks, int taskCount){
             tasks[i].time--;
         }
     }
-    cout << endl;
-    cout << "Tempo total: " << totalExecutionTime << endl;
+    return totalExecutionTime;
 }
 
 int main()
 {
     int j = 0;
     int taskCount = 0;
-    char *ptr;
+    int roundRobinExecutionTime, shortestJobFirstExecutionTime;
+
 
     ifstream file("tarefas.txt");
     if (file.is_open()){
@@ -125,10 +124,19 @@ int main()
             TASKSCOPY[c] = TASKS[c];
         }
 
-        
-        roundRobin(TASKS, taskCount);
+        roundRobinExecutionTime = roundRobin(TASKS, taskCount);
         cout << endl;
-        shortestJobFirst(TASKSCOPY, taskCount);
+        shortestJobFirstExecutionTime = shortestJobFirst(TASKSCOPY, taskCount);
+
+        cout << endl;
+        cout << "-----------------------------------------------------" << endl;
+        cout << "Tempo total Round Robin:                         " << roundRobinExecutionTime << "s" <<endl;
+        cout << "Media de execucao por tarefa Round Robin:        " << (float)roundRobinExecutionTime / (float)taskCount << "s" <<endl;
+        cout << endl;
+        cout << "Tempo total Shortest Job First:                  " << shortestJobFirstExecutionTime << "s" <<endl;
+        cout << "Media de execucao por tarefa Shortest Job First: " << (float)shortestJobFirstExecutionTime / (float)taskCount << "s" <<endl;
+        cout << "-----------------------------------------------------" << endl;
+        cout << endl;
     }
     return 0;
 }
