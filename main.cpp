@@ -3,7 +3,7 @@
 #include <cstring>
 
 #define OVERHEAD 1
-#define QUANTUM 3
+#define QUANTUM 2
 
 using namespace std;
 
@@ -38,37 +38,41 @@ void readLine(string line, string *taskName, int *taskStart, int *taskTime){
     }
 }
 
-int roundRobin(struct Task *tasks, int taskCount){
+
+void roundRobin(struct Task *tasks, int taskCount){
     int j = 0;
     int k = 0;
+    int i = 0;
+    int quantumCount = 0;
     int totalExecutionTime = 0;
 
     cout << "      ==== Round Robin ====      " << endl << endl;
 
     while(j < taskCount){
-        for(int i=0; i < taskCount; i++){
-            if(k<taskCount){
-                totalExecutionTime += tasks[i].time;
-                k++;
+        if(quantumCount == QUANTUM || tasks[i].time == 0){
+            cout << endl;
+            i++;
+            if(i >= taskCount){
+                i = 0;
             }
-            if(tasks[i].time > 0){  
-                cout << "Executando: " << tasks[i].name << " Tempo restante: " << tasks[i].time << endl;
-                if(j < taskCount - 1){
-                    tasks[i].time -= (QUANTUM - OVERHEAD);
-                }
-                else{
-                    tasks[i].time = 0;
-                }
-                totalExecutionTime += OVERHEAD;
-
-                if(tasks[i].time <= 0){
-                    cout << tasks[i].name << " Finalizada!" << endl;
-                    j++;
-                }
+            quantumCount = 0;
+            continue;
+        }
+        cout << k << " | Quantum count: "<< quantumCount << " | i: " << i << " | Current task: " << tasks[i].name << " | Time to complete: " << tasks[i].time << " | Task start: " << tasks[i].start << endl;
+  
+        if (tasks[i].start <= k && tasks[i].time > 0){
+            tasks[i].time--;
+            if(tasks[i].time == 0){
+                cout << endl;
+                cout << "Tarefa " << tasks[i].name << " Finalizada! | Tempo total de execucao: " << (k + 1) - tasks[i].start << endl; 
+                j++;
             }
         }
-}            
-    return totalExecutionTime; 
+
+        quantumCount++;
+        k++;
+    }            
+
 }
 
 int shortestJobFirst(struct Task *tasks, int taskCount){
@@ -124,19 +128,21 @@ int main()
             TASKSCOPY[c] = TASKS[c];
         }
 
-        roundRobinExecutionTime = roundRobin(TASKS, taskCount);
-        cout << endl;
-        shortestJobFirstExecutionTime = shortestJobFirst(TASKSCOPY, taskCount);
+        roundRobin(TASKS, taskCount);
 
-        cout << endl;
-        cout << "-----------------------------------------------------" << endl;
-        cout << "Tempo total Round Robin:                         " << roundRobinExecutionTime << "s" <<endl;
-        cout << "Media de execucao por tarefa Round Robin:        " << (float)roundRobinExecutionTime / (float)taskCount << "s" <<endl;
-        cout << endl;
-        cout << "Tempo total Shortest Job First:                  " << shortestJobFirstExecutionTime << "s" <<endl;
-        cout << "Media de execucao por tarefa Shortest Job First: " << (float)shortestJobFirstExecutionTime / (float)taskCount << "s" <<endl;
-        cout << "-----------------------------------------------------" << endl;
-        cout << endl;
+        //roundRobinExecutionTime = roundRobin(TASKS, taskCount);
+        //cout << endl;
+        //shortestJobFirstExecutionTime = shortestJobFirst(TASKSCOPY, taskCount);
+
+        // cout << endl;
+        // cout << "-----------------------------------------------------" << endl;
+        // cout << "Tempo total Round Robin:                         " << roundRobinExecutionTime << "s" <<endl;
+        // cout << "Media de execucao por tarefa Round Robin:        " << (float)roundRobinExecutionTime / (float)taskCount << "s" <<endl;
+        // cout << endl;
+        // cout << "Tempo total Shortest Job First:                  " << shortestJobFirstExecutionTime << "s" <<endl;
+        // cout << "Media de execucao por tarefa Shortest Job First: " << (float)shortestJobFirstExecutionTime / (float)taskCount << "s" <<endl;
+        // cout << "-----------------------------------------------------" << endl;
+        // cout << endl;
     }
     return 0;
 }
